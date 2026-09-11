@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛒 Lista zakupów — REMA 1000</title>
+<style>
+  :root { --red:#d9292f; --bg:#f6f6f4; --card:#ffffff; --text:#1a1a1a; --muted:#9a9a9a; }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 48px; }
+  header { background: var(--red); color:#fff; padding: 20px 18px; position: sticky; top:0; z-index:10; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+  header h1 { font-size: 1.35rem; letter-spacing:.2px; }
+  header .meta { font-size: .78rem; opacity:.85; margin-top:4px; }
+  main { max-width: 560px; margin: 0 auto; padding: 14px; }
+  section { background: var(--card); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  section h2 { font-size: 1rem; margin-bottom: 4px; display:flex; align-items:center; gap:8px; }
+  ul { list-style: none; }
+  li { display:flex; align-items:center; gap:10px; padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 1rem; }
+  li:last-child { border-bottom: none; }
+  input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--red); flex-shrink:0; }
+  li.done span { text-decoration: line-through; color: var(--muted); }
+  .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛒 Lista zakupów</h1>
+  <div class="meta">REMA 1000 · posortowane wg układu sklepu · aktualizacja: 2026-09-11</div>
+</header>
+<main>
+  <section><h2>🥦 Owoce i warzywa</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🍞 Pieczywo</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🥛 Nabiał</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🥪 Wędliny i sery</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🥩 Mięso i ryby</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🍝 Suchy prowiant</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>❄️ Mrożonki</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🍫 Przekąski i napoje</h2><ul><li class="empty">(pusto)</li></ul></section>
+  <section><h2>🧹 Chemia i higiena</h2><ul><li class="empty">(pusto)</li></ul></section>
+</main>
+<script>
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => cb.closest('li').classList.toggle('done', cb.checked));
+  });
+</script>
+</body>
+</html>
