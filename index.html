@@ -35,25 +35,51 @@
            font-size: .82rem; line-height: 1.5; }
   footer b { color: var(--text); }
   code { background:#eceff3; padding:1px 5px; border-radius:5px; font-size:.85em; }
+  li .del { margin-left:auto; border:none; background:transparent; color:#cfcfcf; font-size:1rem;
+            line-height:1; cursor:pointer; padding:4px 7px; border-radius:6px; }
+  li .del:hover, li .del:active { background:#fdecec; color:var(--red); }
+  .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:#1a1a1a;
+           color:#fff; font-size:.85rem; padding:10px 14px; border-radius:10px; opacity:0;
+           transition:opacity .2s; pointer-events:none; max-width:90%; text-align:center; z-index:50; }
+  .toast.show { opacity:.95; }
 </style>
 </head>
 <body>
 <header>
   <h1>🛒 Lista zakupów</h1>
-  <div class="meta">REMA 1000 · układ sklepu · 45 do kupienia · aktualizacja 2026-09-12 18:41</div>
+  <div class="meta">REMA 1000 · układ sklepu · 14 do kupienia · aktualizacja 2026-09-12 18:42</div>
 </header>
 <main>
-  <section><h2>🥦 Owoce i warzywa<span class="n">16</span></h2><ul><li><input type="checkbox"><span>Awokado</span></li><li><input type="checkbox"><span>Banany</span></li><li><input type="checkbox"><span>Batat</span></li><li><input type="checkbox"><span>Borówki</span></li><li><input type="checkbox"><span>cukinia</span></li><li><input type="checkbox"><span>gruszki<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>Jakieś warzywa do gryzienia</span></li><li><input type="checkbox"><span>kapusta<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>mango<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>marchew</span></li><li><input type="checkbox"><span>melon<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>Ogórek</span></li><li><input type="checkbox"><span>owoce pestkowe<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>papryka<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>pietruszka<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>ziemniaki<span class="tag">inwentarz</span></span></li></ul></section><section><h2>🍞 Pieczywo<span class="n">4</span></h2><ul><li><input type="checkbox"><span>Bułki</span></li><li><input type="checkbox"><span>Chleb</span></li><li><input type="checkbox"><span>Chlebek dla Filipka</span></li><li><input type="checkbox"><span>drożdże<span class="tag">inwentarz</span></span></li></ul></section><section><h2>🥛 Nabiał<span class="n">5</span></h2><ul><li><input type="checkbox"><span>Cheddar</span></li><li><input type="checkbox"><span>Jogurty dla Marty</span></li><li><input type="checkbox"><span>Ser żółty</span></li><li><input type="checkbox"><span>Serek wiejski</span></li><li><input type="checkbox"><span class="low">sok<span class="tag">inwentarz</span></span></li></ul></section><section><h2>🥪 Wędliny i sery<span class="n">3</span></h2><ul><li><input type="checkbox"><span>Hummus</span></li><li><input type="checkbox"><span>wędliny<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span class="low">dżem<span class="tag">inwentarz</span></span></li></ul></section><section><h2>🥩 Mięso i ryby<span class="n">3</span></h2><ul><li><input type="checkbox"><span>Burger wołowy</span></li><li><input type="checkbox"><span>kurczak<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>Wołowina w kawałku</span></li></ul></section><section><h2>🍝 Suchy prowiant<span class="n">6</span></h2><ul><li><input type="checkbox"><span>Przecier pomidorowy</span></li><li><input type="checkbox"><span>ryż<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>Słoiczki z 10</span></li><li><input type="checkbox"><span class="low">makaron<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span class="low">olej<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span class="low">płatki/musli<span class="tag">inwentarz</span></span></li></ul></section><section><h2>❄️ Mrożonki<span class="n">2</span></h2><ul><li><input type="checkbox"><span>lody<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>ryba<span class="tag">inwentarz</span></span></li></ul></section><section><h2>🍫 Przekąski i napoje<span class="n">4</span></h2><ul><li><input type="checkbox"><span>Coś do chrupania</span></li><li><input type="checkbox"><span>kawa</span></li><li><input type="checkbox"><span>orzechy<span class="tag">inwentarz</span></span></li><li><input type="checkbox"><span>Woda lekko gazowana</span></li></ul></section><section><h2>🧹 Chemia i higiena<span class="n">2</span></h2><ul><li><input type="checkbox"><span>Papier toaletowy</span></li><li><input type="checkbox"><span>Ręczniki papierowe</span></li></ul></section>
+  <section><h2>🥦 Owoce i warzywa<span class="n">3</span></h2><ul><li data-name="Banany"><input type="checkbox"><span>Banany</span><button class="del" type="button" title="Usuń" aria-label="Usuń Banany">✕</button></li><li data-name="Batat"><input type="checkbox"><span>Batat</span><button class="del" type="button" title="Usuń" aria-label="Usuń Batat">✕</button></li><li data-name="Ogórek"><input type="checkbox"><span>Ogórek</span><button class="del" type="button" title="Usuń" aria-label="Usuń Ogórek">✕</button></li></ul></section><section><h2>🍞 Pieczywo<span class="n">2</span></h2><ul><li data-name="bułki"><input type="checkbox"><span>bułki<span class="tag">inwentarz</span></span><button class="del" type="button" title="Usuń" aria-label="Usuń bułki">✕</button></li><li data-name="Chleb"><input type="checkbox"><span>Chleb</span><button class="del" type="button" title="Usuń" aria-label="Usuń Chleb">✕</button></li></ul></section><section><h2>🥛 Nabiał<span class="n">2</span></h2><ul><li data-name="Jogurty dla Marty"><input type="checkbox"><span>Jogurty dla Marty</span><button class="del" type="button" title="Usuń" aria-label="Usuń Jogurty dla Marty">✕</button></li><li data-name="ser"><input type="checkbox"><span>ser<span class="tag">inwentarz</span></span><button class="del" type="button" title="Usuń" aria-label="Usuń ser">✕</button></li></ul></section><section><h2>🥩 Mięso i ryby<span class="n">2</span></h2><ul><li data-name="Burger wołowy"><input type="checkbox"><span>Burger wołowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Burger wołowy">✕</button></li><li data-name="Wołowina w kawałku"><input type="checkbox"><span>Wołowina w kawałku</span><button class="del" type="button" title="Usuń" aria-label="Usuń Wołowina w kawałku">✕</button></li></ul></section><section><h2>🍝 Suchy prowiant<span class="n">2</span></h2><ul><li data-name="barnemat"><input type="checkbox"><span>barnemat<span class="tag">inwentarz</span></span><button class="del" type="button" title="Usuń" aria-label="Usuń barnemat">✕</button></li><li data-name="Przecier pomidorowy"><input type="checkbox"><span>Przecier pomidorowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Przecier pomidorowy">✕</button></li></ul></section><section><h2>❄️ Mrożonki<span class="n">1</span></h2><ul><li data-name="borówki"><input type="checkbox"><span>borówki<span class="tag">inwentarz</span></span><button class="del" type="button" title="Usuń" aria-label="Usuń borówki">✕</button></li></ul></section><section><h2>🧹 Chemia i higiena<span class="n">2</span></h2><ul><li data-name="Papier toaletowy"><input type="checkbox"><span>Papier toaletowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Papier toaletowy">✕</button></li><li data-name="Ręczniki papierowe"><input type="checkbox"><span>Ręczniki papierowe</span><button class="del" type="button" title="Usuń" aria-label="Usuń Ręczniki papierowe">✕</button></li></ul></section>
 </main>
 <footer>
   <p><b>Jak odhaczać:</b> napisz w Telegramie <code>kupiłem mleko w Kiwi</code> — pozycja zniknie
   z listy, a inwentarz zapamięta, że masz. Gdy coś się kończy: <code>skończyło się mleko</code>.
   Dopisanie: <code>dodaj hummus</code>.</p>
   <p style="margin-top:8px">Zaznaczone tylko lokalnie w tej przeglądarce — żeby trafiło do bazy, napisz w Telegramie: „kupiłem &lt;produkt&gt;”.</p>
+  <p style="margin-top:8px"><b>Usuwanie:</b> ✕ przy pozycji kopiuje komendę — wklej ją w Telegramie.</p>
 </footer>
+<div id="toast" class="toast"></div>
 <script>
   document.querySelectorAll('input[type=checkbox]').forEach(cb => {
     cb.addEventListener('change', () => cb.closest('li').classList.toggle('done', cb.checked));
+  });
+  const toast = document.getElementById('toast');
+  function showMsg(m) {
+    toast.textContent = m;
+    toast.classList.add('show');
+    clearTimeout(showMsg._t);
+    showMsg._t = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+  document.querySelectorAll('li .del').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const li = btn.closest('li');
+      const cmd = 'usuń ' + li.dataset.name;
+      let ok = false;
+      try { await navigator.clipboard.writeText(cmd); ok = true; } catch (e) {}
+      showMsg((ok ? 'Skopiowane: ' : 'Wpisz w Telegramie: ') + '„' + cmd + '"');
+      li.style.opacity = '.35';
+    });
   });
 </script>
 </body>
