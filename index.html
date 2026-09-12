@@ -13,10 +13,15 @@
   * { box-sizing: border-box; margin:0; padding:0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
          background: var(--bg); color: var(--text); padding-bottom: 64px; }
-  header { background: var(--red); color:#fff; padding: 18px 18px 16px; position: sticky; top:0;
+  header { background: var(--red); color:#fff; padding: 18px 18px 14px; position: sticky; top:0;
            z-index:10; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
   header h1 { font-size: 1.3rem; letter-spacing:.2px; }
   header .meta { font-size: .78rem; opacity:.9; margin-top:4px; }
+  .tabs { display:flex; gap:6px; margin-top:12px; }
+  .tab { flex:1; border:none; background:rgba(255,255,255,.18); color:#fff; font-family:inherit;
+         font-size:.9rem; padding:9px 10px; border-radius:9px; cursor:pointer; }
+  .tab.active { background:#fff; color:var(--red); font-weight:600; }
+  .tab .n { opacity:.7; font-size:.8rem; }
   main { max-width: 560px; margin: 0 auto; padding: 14px; }
   section { background: var(--card); border-radius: 12px; padding: 12px 16px; margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,.06); }
@@ -28,16 +33,24 @@
   li:last-child { border-bottom: none; }
   input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--red); flex-shrink:0; }
   li.done span { text-decoration: line-through; color: var(--muted); }
-  .tag { font-size: .68rem; background: var(--tag); color:#54627a; border-radius: 6px;
-         padding: 1px 6px; margin-left: 6px; white-space: nowrap; }
   .low { color:#b26a00; }
+  .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
+  .dot { width:14px; height:14px; border-radius:50%; background:#e3e3e3; flex-shrink:0; }
+  li .del { margin-left:auto; border:none; background:transparent; color:#cfcfcf; font-size:1rem;
+            line-height:1; cursor:pointer; padding:4px 7px; border-radius:6px; }
+  li .del:hover, li .del:active { background:#fdecec; color:var(--red); }
+  li .add { margin-left:auto; border:none; background:#eef7ee; color:#1f7a3d; font-size:1.1rem;
+            font-weight:700; line-height:1; cursor:pointer; padding:3px 11px; border-radius:8px; }
+  li .add:hover, li .add:active { background:#d7efdd; }
+  li.queued { opacity:.45; }
+  .banner { background:#fff8e1; border:1px solid #f0e0a8; border-radius:12px; padding:10px 14px;
+            margin-bottom:12px; font-size:.85rem; line-height:1.5; color:#6b5a12; }
+  .banner b { color:#4a3d00; }
+  .banner code { background:#fff; }
   footer { max-width: 560px; margin: 0 auto; padding: 4px 16px 24px; color: var(--muted);
            font-size: .82rem; line-height: 1.5; }
   footer b { color: var(--text); }
   code { background:#eceff3; padding:1px 5px; border-radius:5px; font-size:.85em; }
-  li .del { margin-left:auto; border:none; background:transparent; color:#cfcfcf; font-size:1rem;
-            line-height:1; cursor:pointer; padding:4px 7px; border-radius:6px; }
-  li .del:hover, li .del:active { background:#fdecec; color:var(--red); }
   .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:#1a1a1a;
            color:#fff; font-size:.85rem; padding:10px 14px; border-radius:10px; opacity:0;
            transition:opacity .2s; pointer-events:none; max-width:90%; text-align:center; z-index:50; }
@@ -47,40 +60,94 @@
 <body>
 <header>
   <h1>🛒 Lista zakupów</h1>
-  <div class="meta">REMA 1000 · układ sklepu · 12 do kupienia · aktualizacja 2026-09-12 18:44</div>
+  <div class="meta">REMA 1000 · układ sklepu · aktualizacja 2026-09-12 18:48</div>
+  <div class="tabs">
+    <button class="tab active" data-tab="list">Lista <span class="n">12</span></button>
+    <button class="tab" data-tab="sugg">Sugestie <span class="n">24</span></button>
+  </div>
 </header>
 <main>
-  <section><h2>🥦 Owoce i warzywa<span class="n">5</span></h2><ul><li data-name="Banany"><input type="checkbox"><span>Banany</span><button class="del" type="button" title="Usuń" aria-label="Usuń Banany">✕</button></li><li data-name="Batat"><input type="checkbox"><span>Batat</span><button class="del" type="button" title="Usuń" aria-label="Usuń Batat">✕</button></li><li data-name="Cukinia"><input type="checkbox"><span>Cukinia</span><button class="del" type="button" title="Usuń" aria-label="Usuń Cukinia">✕</button></li><li data-name="Marchew"><input type="checkbox"><span>Marchew</span><button class="del" type="button" title="Usuń" aria-label="Usuń Marchew">✕</button></li><li data-name="Ogórek"><input type="checkbox"><span>Ogórek</span><button class="del" type="button" title="Usuń" aria-label="Usuń Ogórek">✕</button></li></ul></section><section><h2>🍞 Pieczywo<span class="n">1</span></h2><ul><li data-name="Chleb"><input type="checkbox"><span>Chleb</span><button class="del" type="button" title="Usuń" aria-label="Usuń Chleb">✕</button></li></ul></section><section><h2>🥛 Nabiał<span class="n">1</span></h2><ul><li data-name="Jogurty dla Marty"><input type="checkbox"><span>Jogurty dla Marty</span><button class="del" type="button" title="Usuń" aria-label="Usuń Jogurty dla Marty">✕</button></li></ul></section><section><h2>🥩 Mięso i ryby<span class="n">2</span></h2><ul><li data-name="Burger wołowy"><input type="checkbox"><span>Burger wołowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Burger wołowy">✕</button></li><li data-name="Wołowina w kawałku"><input type="checkbox"><span>Wołowina w kawałku</span><button class="del" type="button" title="Usuń" aria-label="Usuń Wołowina w kawałku">✕</button></li></ul></section><section><h2>🍝 Suchy prowiant<span class="n">1</span></h2><ul><li data-name="Przecier pomidorowy"><input type="checkbox"><span>Przecier pomidorowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Przecier pomidorowy">✕</button></li></ul></section><section><h2>🧹 Chemia i higiena<span class="n">2</span></h2><ul><li data-name="Papier toaletowy"><input type="checkbox"><span>Papier toaletowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Papier toaletowy">✕</button></li><li data-name="Ręczniki papierowe"><input type="checkbox"><span>Ręczniki papierowe</span><button class="del" type="button" title="Usuń" aria-label="Usuń Ręczniki papierowe">✕</button></li></ul></section>
+  <div id="pane-list"><section><h2>🥦 Owoce i warzywa<span class="n">5</span></h2><ul><li data-name="Banany"><input type="checkbox"><span>Banany</span><button class="del" type="button" title="Usuń" aria-label="Usuń Banany">✕</button></li><li data-name="Batat"><input type="checkbox"><span>Batat</span><button class="del" type="button" title="Usuń" aria-label="Usuń Batat">✕</button></li><li data-name="Cukinia"><input type="checkbox"><span>Cukinia</span><button class="del" type="button" title="Usuń" aria-label="Usuń Cukinia">✕</button></li><li data-name="Marchew"><input type="checkbox"><span>Marchew</span><button class="del" type="button" title="Usuń" aria-label="Usuń Marchew">✕</button></li><li data-name="Ogórek"><input type="checkbox"><span>Ogórek</span><button class="del" type="button" title="Usuń" aria-label="Usuń Ogórek">✕</button></li></ul></section><section><h2>🍞 Pieczywo<span class="n">1</span></h2><ul><li data-name="Chleb"><input type="checkbox"><span>Chleb</span><button class="del" type="button" title="Usuń" aria-label="Usuń Chleb">✕</button></li></ul></section><section><h2>🥛 Nabiał<span class="n">1</span></h2><ul><li data-name="Jogurty dla Marty"><input type="checkbox"><span>Jogurty dla Marty</span><button class="del" type="button" title="Usuń" aria-label="Usuń Jogurty dla Marty">✕</button></li></ul></section><section><h2>🥩 Mięso i ryby<span class="n">2</span></h2><ul><li data-name="Burger wołowy"><input type="checkbox"><span>Burger wołowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Burger wołowy">✕</button></li><li data-name="Wołowina w kawałku"><input type="checkbox"><span>Wołowina w kawałku</span><button class="del" type="button" title="Usuń" aria-label="Usuń Wołowina w kawałku">✕</button></li></ul></section><section><h2>🍝 Suchy prowiant<span class="n">1</span></h2><ul><li data-name="Przecier pomidorowy"><input type="checkbox"><span>Przecier pomidorowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Przecier pomidorowy">✕</button></li></ul></section><section><h2>🧹 Chemia i higiena<span class="n">2</span></h2><ul><li data-name="Papier toaletowy"><input type="checkbox"><span>Papier toaletowy</span><button class="del" type="button" title="Usuń" aria-label="Usuń Papier toaletowy">✕</button></li><li data-name="Ręczniki papierowe"><input type="checkbox"><span>Ręczniki papierowe</span><button class="del" type="button" title="Usuń" aria-label="Usuń Ręczniki papierowe">✕</button></li></ul></section></div>
+  <div id="pane-sugg" hidden><section><h2>🥦 Owoce i warzywa<span class="n">8</span></h2><ul><li data-name="gruszki"><span class="dot"></span><span>gruszki</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj gruszki">+</button></li><li data-name="kapusta"><span class="dot"></span><span>kapusta</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj kapusta">+</button></li><li data-name="mango"><span class="dot"></span><span>mango</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj mango">+</button></li><li data-name="melon"><span class="dot"></span><span>melon</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj melon">+</button></li><li data-name="owoce pestkowe"><span class="dot"></span><span>owoce pestkowe</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj owoce pestkowe">+</button></li><li data-name="papryka"><span class="dot"></span><span>papryka</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj papryka">+</button></li><li data-name="pietruszka"><span class="dot"></span><span>pietruszka</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj pietruszka">+</button></li><li data-name="ziemniaki"><span class="dot"></span><span>ziemniaki</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj ziemniaki">+</button></li></ul></section><section><h2>🍞 Pieczywo<span class="n">2</span></h2><ul><li data-name="bułki"><span class="dot"></span><span>bułki</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj bułki">+</button></li><li data-name="drożdże"><span class="dot"></span><span>drożdże</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj drożdże">+</button></li></ul></section><section><h2>🥛 Nabiał<span class="n">2</span></h2><ul><li data-name="ser"><span class="dot"></span><span>ser</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj ser">+</button></li><li data-name="sok"><span class="dot"></span><span class="low">sok</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj sok">+</button></li></ul></section><section><h2>🥪 Wędliny i sery<span class="n">2</span></h2><ul><li data-name="wędliny"><span class="dot"></span><span>wędliny</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj wędliny">+</button></li><li data-name="dżem"><span class="dot"></span><span class="low">dżem</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj dżem">+</button></li></ul></section><section><h2>🥩 Mięso i ryby<span class="n">1</span></h2><ul><li data-name="kurczak"><span class="dot"></span><span>kurczak</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj kurczak">+</button></li></ul></section><section><h2>🍝 Suchy prowiant<span class="n">5</span></h2><ul><li data-name="barnemat"><span class="dot"></span><span>barnemat</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj barnemat">+</button></li><li data-name="ryż"><span class="dot"></span><span>ryż</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj ryż">+</button></li><li data-name="makaron"><span class="dot"></span><span class="low">makaron</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj makaron">+</button></li><li data-name="olej"><span class="dot"></span><span class="low">olej</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj olej">+</button></li><li data-name="płatki/musli"><span class="dot"></span><span class="low">płatki/musli</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj płatki/musli">+</button></li></ul></section><section><h2>❄️ Mrożonki<span class="n">3</span></h2><ul><li data-name="borówki"><span class="dot"></span><span>borówki</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj borówki">+</button></li><li data-name="lody"><span class="dot"></span><span>lody</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj lody">+</button></li><li data-name="ryba"><span class="dot"></span><span>ryba</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj ryba">+</button></li></ul></section><section><h2>🍫 Przekąski i napoje<span class="n">1</span></h2><ul><li data-name="orzechy"><span class="dot"></span><span>orzechy</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj orzechy">+</button></li></ul></section></div>
 </main>
 <footer>
-  <p><b>Jak odhaczać:</b> napisz w Telegramie <code>kupiłem mleko w Kiwi</code> — pozycja zniknie
-  z listy, a inwentarz zapamięta, że masz. Gdy coś się kończy: <code>skończyło się mleko</code>.
-  Dopisanie: <code>dodaj hummus</code>.</p>
-  <p style="margin-top:8px">Zaznaczone tylko lokalnie w tej przeglądarce — żeby trafiło do bazy, napisz w Telegramie: „kupiłem &lt;produkt&gt;”.</p>
-  <p style="margin-top:8px"><b>Usuwanie:</b> ✕ przy pozycji kopiuje komendę — wklej ją w Telegramie.</p>
+  <p><b>Kupione:</b> napisz w Telegramie <code>kupiłem mleko w Kiwi</code>. <b>Kończy się:</b>
+  <code>skończyło się mleko</code>. <b>Dopisanie:</b> <code>dodaj hummus</code>.</p>
+  <p style="margin-top:8px">Zaznaczone i dodane po stronie przeglądarki są tylko lokalne. Żeby trafiło do bazy, wyślij w Telegramie komendę, którą skopiuje przycisk.</p>
+  <p style="margin-top:8px"><b>✕</b> kopiuje <code>usuń …</code>, <b>+</b> kopiuje
+  <code>dodaj …</code> — wklej skopiowaną komendę w Telegramie.</p>
 </footer>
 <div id="toast" class="toast"></div>
 <script>
-  document.querySelectorAll('input[type=checkbox]').forEach(cb => {
-    cb.addEventListener('change', () => cb.closest('li').classList.toggle('done', cb.checked));
-  });
+  const $ = s => document.querySelector(s);
   const toast = document.getElementById('toast');
   function showMsg(m) {
     toast.textContent = m;
     toast.classList.add('show');
     clearTimeout(showMsg._t);
-    showMsg._t = setTimeout(() => toast.classList.remove('show'), 3000);
+    showMsg._t = setTimeout(() => toast.classList.remove('show'), 3400);
   }
-  document.querySelectorAll('li .del').forEach(btn => {
+
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+    document.getElementById('pane-list').hidden = t.dataset.tab !== 'list';
+    document.getElementById('pane-sugg').hidden = t.dataset.tab !== 'sugg';
+  }));
+
+  document.querySelectorAll('#pane-list input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => cb.closest('li').classList.toggle('done', cb.checked));
+  });
+
+  async function copyCmd(cmd) {
+    try { await navigator.clipboard.writeText(cmd); return true; } catch (e) { return false; }
+  }
+
+  const KEY = 'zakupy_kolejka';
+  function q() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+  function setQ(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+
+  function syncBanner() {
+    const names = q();
+    let b = document.getElementById('queue-banner');
+    if (!names.length) { if (b) b.remove(); return; }
+    if (!b) {
+      b = document.createElement('div');
+      b.id = 'queue-banner'; b.className = 'banner';
+      document.getElementById('pane-list').prepend(b);
+    }
+    b.innerHTML = '<b>Do wysłania w Telegramie (' + names.length + '):</b><br>' +
+      names.map(n => 'dodaj ' + n).join('<br>');
+  }
+
+  document.querySelectorAll('#pane-list li .del').forEach(btn => {
     btn.addEventListener('click', async () => {
       const li = btn.closest('li');
       const cmd = 'usuń ' + li.dataset.name;
-      let ok = false;
-      try { await navigator.clipboard.writeText(cmd); ok = true; } catch (e) {}
+      const ok = await copyCmd(cmd);
       showMsg((ok ? 'Skopiowane: ' : 'Wpisz w Telegramie: ') + '„' + cmd + '"');
       li.style.opacity = '.35';
     });
   });
+
+  document.querySelectorAll('#pane-sugg li .add').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const li = btn.closest('li');
+      const name = li.dataset.name;
+      const cmd = 'dodaj ' + name;
+      const ok = await copyCmd(cmd);
+      const a = q();
+      if (!a.includes(name)) a.push(name);
+      setQ(a);
+      li.classList.add('queued');
+      syncBanner();
+      showMsg((ok ? 'Skopiowane: ' : 'Wpisz w Telegramie: ') + '„' + cmd + '" — wyślij, żeby trafiło na listę');
+    });
+  });
+
+  document.querySelectorAll('#pane-sugg li').forEach(li => {
+    if (q().includes(li.dataset.name)) li.classList.add('queued');
+  });
+  syncBanner();
 </script>
 </body>
 </html>
