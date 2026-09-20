@@ -92,7 +92,7 @@
 <footer>
   <p>Zmiany idą wprost do bazy (Supabase) — ta sama lista co w Telegramie.
   Odhaczenie = kupione, ✕ = usuń, + = dodaj sugestię do listy.</p>
-  <p style="margin-top:8px">Wygenerowano 2026-09-20 23:12</p>
+  <p style="margin-top:8px">Wygenerowano 2026-09-20 23:19</p>
 </footer>
 <div id="toast" class="toast"></div>
 <script>
@@ -233,18 +233,16 @@ const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torr
     if (!(Number(it.qty) > 0)) el.classList.add('emptyrow');
     const sp = document.createElement('span');
     sp.textContent = it.name;
+    const step = it.unit === 'kg' ? 0.25 : 1;
     const ctl = document.createElement('div');
     ctl.className = 'qty';
     const mk = (txt, cls, fn) => { const b = document.createElement('button');
       b.textContent = txt; b.className = cls; b.addEventListener('click', fn); return b; };
     const val = document.createElement('b');
-    val.textContent = fmtQty(it.qty);
-    ctl.append(
-      mk('−', 'qn', () => setStock(it.name, Math.max(0, +(Number(it.qty) - 0.25).toFixed(2)))),
-      val,
-      mk('+', 'qp', () => setStock(it.name, +(Number(it.qty) + 0.25).toFixed(2))),
-      mk('0', 'qz', () => setStock(it.name, 0))
-    );
+    val.textContent = fmtQty(it.qty) + ' ' + (it.unit || '');
+    const dec = () => setStock(it.name, Math.max(0, +(Number(it.qty) - step).toFixed(2)));
+    const inc = () => setStock(it.name, +(Number(it.qty) + step).toFixed(2));
+    ctl.append(mk('−', 'qn', dec), val, mk('+', 'qp', inc), mk('0', 'qz', () => setStock(it.name, 0)));
     el.append(sp, ctl);
     return el;
   }
@@ -283,7 +281,7 @@ const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torr
   }
   async function drawStock() {
     try {
-      stockRows = await api('/stock?select=name,qty,category,source&order=name') || [];
+      stockRows = await api('/stock?select=name,qty,category,unit,per,source&order=name') || [];
     } catch (e) { showMsg('brak stanu: ' + e.message); return; }
     renderStock();
   }
