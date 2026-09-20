@@ -3,54 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>🛒 Lista zakupów — REMA 1000</title>
 <style>
-  :root { --red:#d9292f; --bg:#f6f6f4; --card:#ffffff; --text:#1a1a1a; --muted:#8d8d8d;
+  :root { --red:#d9292f; --bg:#f6f6f4; --card:#fff; --text:#1a1a1a; --muted:#8d8d8d;
           --line:#f0f0f0; --tag:#eef2f7; }
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-         background: var(--bg); color: var(--text); padding-bottom: 64px; }
-  header { background: var(--red); color:#fff; padding: 18px 18px 14px; position: sticky; top:0;
-           z-index:10; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
-  header h1 { font-size: 1.3rem; letter-spacing:.2px; }
-  header .meta { font-size: .78rem; opacity:.9; margin-top:4px; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         background:var(--bg); color:var(--text); padding-bottom:64px; }
+  header { background:var(--red); color:#fff; padding:18px 18px 14px; position:sticky; top:0;
+           z-index:10; box-shadow:0 2px 6px rgba(0,0,0,.12); }
+  header h1 { font-size:1.3rem; }
+  header .meta { font-size:.78rem; opacity:.9; margin-top:4px; }
   .tabs { display:flex; gap:6px; margin-top:12px; }
   .tab { flex:1; border:none; background:rgba(255,255,255,.18); color:#fff; font-family:inherit;
          font-size:.9rem; padding:9px 10px; border-radius:9px; cursor:pointer; }
   .tab.active { background:#fff; color:var(--red); font-weight:600; }
   .tab .n { opacity:.7; font-size:.8rem; }
-  main { max-width: 560px; margin: 0 auto; padding: 14px; }
-  section { background: var(--card); border-radius: 12px; padding: 12px 16px; margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-  section h2 { font-size: 1rem; margin-bottom: 2px; display:flex; align-items:center; gap:8px; }
-  section h2 .n { font-size:.75rem; color: var(--muted); font-weight:400; margin-left:auto; }
-  ul { list-style: none; }
-  li { display:flex; align-items:center; gap:10px; padding: 7px 0; border-bottom: 1px solid var(--line);
-       font-size: 1rem; }
-  li:last-child { border-bottom: none; }
-  input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--red); flex-shrink:0; }
-  li.done span { text-decoration: line-through; color: var(--muted); }
+  main { max-width:560px; margin:0 auto; padding:14px; }
+  .row { display:flex; gap:8px; margin-bottom:12px; }
+  .row input { flex:1; min-width:0; font-family:inherit; font-size:1rem; padding:12px 14px;
+               border-radius:12px; border:1px solid #e0e0dd; background:#fff; }
+  .row button { font-family:inherit; border:none; border-radius:12px; cursor:pointer;
+                background:var(--red); color:#fff; font-weight:600; font-size:.95rem; padding:12px 16px; }
+  .tools { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .tools button { font-family:inherit; font-size:.85rem; border:1px solid #e0e0dd; border-radius:12px;
+                  padding:9px 13px; background:#fff; color:var(--text); cursor:pointer; }
+  section { background:var(--card); border-radius:12px; padding:12px 16px; margin-bottom:12px;
+            box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  section h2 { font-size:1rem; margin-bottom:2px; display:flex; align-items:center; gap:8px; }
+  section h2 .n { font-size:.75rem; color:var(--muted); font-weight:400; margin-left:auto; }
+  ul { list-style:none; }
+  li { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--line);
+       font-size:1rem; }
+  li:last-child { border-bottom:none; }
+  input[type=checkbox] { width:20px; height:20px; accent-color:var(--red); flex-shrink:0; }
+  li.done span { text-decoration:line-through; color:var(--muted); }
   .low { color:#b26a00; }
-  .empty { color: var(--muted); font-style: italic; font-size: .9rem; }
+  .empty { color:var(--muted); font-style:italic; font-size:.9rem; }
   .dot { width:14px; height:14px; border-radius:50%; background:#e3e3e3; flex-shrink:0; }
   li .del { margin-left:auto; border:none; background:transparent; color:#cfcfcf; font-size:1rem;
-            line-height:1; cursor:pointer; padding:4px 7px; border-radius:6px; }
-  li .del:hover, li .del:active { background:#fdecec; color:var(--red); }
+            cursor:pointer; padding:4px 7px; border-radius:6px; }
+  li .del:hover { background:#fdecec; color:var(--red); }
   li .add { margin-left:auto; border:none; background:#eef7ee; color:#1f7a3d; font-size:1.1rem;
-            font-weight:700; line-height:1; cursor:pointer; padding:3px 11px; border-radius:8px; }
-  li .add:hover, li .add:active { background:#d7efdd; }
-  li.queued { opacity:.45; }
+            font-weight:700; cursor:pointer; padding:3px 11px; border-radius:8px; }
+  li .add:hover { background:#d7efdd; }
   .banner { background:#fff8e1; border:1px solid #f0e0a8; border-radius:12px; padding:10px 14px;
-            margin-bottom:12px; font-size:.85rem; line-height:1.5; color:#6b5a12; }
-  .banner b { color:#4a3d00; }
-  .banner code { background:#fff; }
-  footer { max-width: 560px; margin: 0 auto; padding: 4px 16px 24px; color: var(--muted);
-           font-size: .82rem; line-height: 1.5; }
-  footer b { color: var(--text); }
-  code { background:#eceff3; padding:1px 5px; border-radius:5px; font-size:.85em; }
+            margin-bottom:12px; font-size:.85rem; color:#6b5a12; }
+  footer { max-width:560px; margin:0 auto; padding:4px 16px 24px; color:var(--muted);
+           font-size:.82rem; line-height:1.5; }
   .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:#1a1a1a;
            color:#fff; font-size:.85rem; padding:10px 14px; border-radius:10px; opacity:0;
            transition:opacity .2s; pointer-events:none; max-width:90%; text-align:center; z-index:50; }
@@ -60,94 +61,157 @@
 <body>
 <header>
   <h1>🛒 Lista zakupów</h1>
-  <div class="meta">REMA 1000 · układ sklepu · aktualizacja 2026-09-20 22:26</div>
+  <div class="meta" id="meta">wczytywanie…</div>
   <div class="tabs">
-    <button class="tab active" data-tab="list">Lista <span class="n">1</span></button>
-    <button class="tab" data-tab="sugg">Sugestie <span class="n">23</span></button>
+    <button class="tab active" data-tab="list">Lista <span class="n" id="c-list">–</span></button>
+    <button class="tab" data-tab="sugg">Sugestie <span class="n" id="c-sugg">–</span></button>
   </div>
 </header>
 <main>
-  <div id="pane-list"><section><h2>🍫 Przekąski i napoje<span class="n">1</span></h2><ul><li data-name="sok"><input type="checkbox"><span>sok</span><button class="del" type="button" title="Usuń" aria-label="Usuń sok">✕</button></li></ul></section></div>
-  <div id="pane-sugg" hidden><section><h2>🥦 Owoce i warzywa<span class="n">10</span></h2><ul><li data-name="cytrusy"><span class="dot"></span><span>cytrusy</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj cytrusy">+</button></li><li data-name="gruszki"><span class="dot"></span><span>gruszki</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj gruszki">+</button></li><li data-name="grzyby"><span class="dot"></span><span>grzyby</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj grzyby">+</button></li><li data-name="jabłka"><span class="dot"></span><span>jabłka</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj jabłka">+</button></li><li data-name="kapusta"><span class="dot"></span><span>kapusta</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj kapusta">+</button></li><li data-name="mango"><span class="dot"></span><span>mango</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj mango">+</button></li><li data-name="melon"><span class="dot"></span><span>melon</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj melon">+</button></li><li data-name="owoce pestkowe"><span class="dot"></span><span>owoce pestkowe</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj owoce pestkowe">+</button></li><li data-name="pietruszka"><span class="dot"></span><span>pietruszka</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj pietruszka">+</button></li><li data-name="sałata"><span class="dot"></span><span>sałata</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj sałata">+</button></li></ul></section><section><h2>🍞 Pieczywo<span class="n">1</span></h2><ul><li data-name="drożdże"><span class="dot"></span><span>drożdże</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj drożdże">+</button></li></ul></section><section><h2>🥪 Wędliny i sery<span class="n">2</span></h2><ul><li data-name="dżem"><span class="dot"></span><span>dżem</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj dżem">+</button></li><li data-name="wędliny"><span class="dot"></span><span>wędliny</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj wędliny">+</button></li></ul></section><section><h2>🍝 Suchy prowiant<span class="n">6</span></h2><ul><li data-name="barnemat"><span class="dot"></span><span>barnemat</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj barnemat">+</button></li><li data-name="konserwy"><span class="dot"></span><span>konserwy</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj konserwy">+</button></li><li data-name="makaron"><span class="dot"></span><span>makaron</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj makaron">+</button></li><li data-name="ryż"><span class="dot"></span><span>ryż</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj ryż">+</button></li><li data-name="olej"><span class="dot"></span><span class="low">olej</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj olej">+</button></li><li data-name="sosy/przyprawy"><span class="dot"></span><span class="low">sosy/przyprawy</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj sosy/przyprawy">+</button></li></ul></section><section><h2>❄️ Mrożonki<span class="n">2</span></h2><ul><li data-name="borówki"><span class="dot"></span><span>borówki</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj borówki">+</button></li><li data-name="lody"><span class="dot"></span><span>lody</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj lody">+</button></li></ul></section><section><h2>🍫 Przekąski i napoje<span class="n">1</span></h2><ul><li data-name="orzechy"><span class="dot"></span><span>orzechy</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj orzechy">+</button></li></ul></section><section><h2>🧾 Kasa<span class="n">1</span></h2><ul><li data-name="Bæreposer 80 % Resirk"><span class="dot"></span><span>Bæreposer 80 % Resirk</span><button class="add" type="button" title="Dodaj do listy" aria-label="Dodaj Bæreposer 80 % Resirk">+</button></li></ul></section></div>
+  <form class="row" id="form" autocomplete="off">
+    <input id="newitem" placeholder="dodaj pozycję… (albo „kupiłem mleko”)">
+    <button type="submit">Dodaj</button>
+  </form>
+  <div class="tools">
+    <button type="button" id="reload">Odśwież</button>
+  </div>
+  <div id="pane-list"></div>
+  <div id="pane-sugg" hidden></div>
 </main>
 <footer>
-  <p><b>Kupione:</b> napisz w Telegramie <code>kupiłem mleko w Kiwi</code>. <b>Kończy się:</b>
-  <code>skończyło się mleko</code>. <b>Dopisanie:</b> <code>dodaj hummus</code>.</p>
-  <p style="margin-top:8px">Zaznaczone i dodane po stronie przeglądarki są tylko lokalne. Żeby trafiło do bazy, wyślij w Telegramie komendę, którą skopiuje przycisk.</p>
-  <p style="margin-top:8px"><b>✕</b> kopiuje <code>usuń …</code>, <b>+</b> kopiuje
-  <code>dodaj …</code> — wklej skopiowaną komendę w Telegramie.</p>
+  <p>Zmiany idą wprost do bazy (Supabase) — ta sama lista co w Telegramie.
+  Odhaczenie = kupione, ✕ = usuń, + = dodaj sugestię do listy.</p>
+  <p style="margin-top:8px">Wygenerowano 2026-09-20 23:01</p>
 </footer>
 <div id="toast" class="toast"></div>
+<script>
+const CONFIG = {"url": "https://nojbfvwmnjkwddrzwrxw.supabase.co/rest/v1", "key": "sb_publishable_nWeOrV3lF_pKUEaUIXm6Lw_ALIPRoBl", "pass": "cebula-bulka-6ca6"};
+const AISLES = {"frukt_og_gront": "🥦 Owoce i warzywa", "brod": "🍞 Pieczywo", "meieri": "🥛 Nabiał", "palegg": "🥪 Wędliny i sery", "kjott_fisk": "🥩 Mięso i ryby", "torrvarer": "🍝 Suchy prowiant", "frys": "❄️ Mrożonki", "snacks_drikke": "🍫 Przekąski i napoje", "husholdning": "🧹 Chemia i higiena", "kassa": "🧾 Kasa", "inne": "📦 Inne"};
+const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torrvarer", "frys", "snacks_drikke", "husholdning", "kassa", "inne"];
+</script>
 <script>
   const $ = s => document.querySelector(s);
   const toast = document.getElementById('toast');
   function showMsg(m) {
-    toast.textContent = m;
-    toast.classList.add('show');
+    toast.textContent = m; toast.classList.add('show');
     clearTimeout(showMsg._t);
-    showMsg._t = setTimeout(() => toast.classList.remove('show'), 3400);
+    showMsg._t = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+  const PASSPHRASE = CONFIG.pass;
+  let busy = false;
+
+  async function api(path, opts) {
+    const r = await fetch(CONFIG.url + path, Object.assign({
+      headers: {apikey: CONFIG.key, Authorization: 'Bearer ' + CONFIG.key,
+                'Content-Type': 'application/json'}
+    }, opts || {}));
+    if (!r.ok) {
+      let msg = 'HTTP ' + r.status;
+      try { const j = await r.json(); msg = j.message || j.error || msg; } catch (e) {}
+      throw new Error(msg);
+    }
+    const t = await r.text();
+    return t ? JSON.parse(t) : null;
+  }
+
+  async function act(action, name, store) {
+    if (busy) return;
+    busy = true;
+    try {
+      const res = await api('/rpc/zk_action', {
+        method: 'POST',
+        body: JSON.stringify({p_pass: PASSPHRASE, p_action: action, p_name: name,
+                              p_store: store || null})
+      });
+      if (res && res.ok === false) showMsg(res.error || 'błąd');
+      await draw();
+    } catch (e) { showMsg('błąd: ' + e.message); }
+    finally { busy = false; }
+  }
+
+  function li(it, kind) {
+    const el = document.createElement('li');
+    const lead = document.createElement('input');
+    lead.type = 'checkbox';
+    lead.addEventListener('change', () => {
+      if (lead.checked) act('bought', it.name, 'strona');
+      else el.classList.toggle('done', lead.checked);
+    });
+    const sp = document.createElement('span');
+    sp.textContent = it.name;
+    if (it.status === 'low') sp.className = 'low';
+    const btn = document.createElement('button');
+    if (kind === 'del') {
+      btn.className = 'del'; btn.textContent = '✕'; btn.title = 'Usuń z listy';
+      btn.addEventListener('click', () => act('remove', it.name));
+    } else {
+      btn.className = 'add'; btn.textContent = '+'; btn.title = 'Dodaj do listy';
+      btn.addEventListener('click', () => act('add', it.name));
+    }
+    el.append(lead, sp, btn);
+    return el;
+  }
+
+  function section(title, items, kind) {
+    const s = document.createElement('section');
+    const h = document.createElement('h2');
+    h.textContent = title;
+    const cnt = document.createElement('span'); cnt.className = 'n'; cnt.textContent = items.length;
+    h.appendChild(cnt);
+    const ul = document.createElement('ul');
+    if (!items.length) {
+      const e = document.createElement('li');
+      const sp = document.createElement('span'); sp.className = 'empty'; sp.textContent = '(pusto)';
+      e.appendChild(sp); ul.appendChild(e);
+    } else items.forEach(it => ul.appendChild(li(it, kind)));
+    s.append(h, ul);
+    return s;
+  }
+
+  function grouped(items, kind) {
+    const frag = document.createDocumentFragment();
+    const groups = {};
+    items.forEach(it => { const k = it.aisle || 'inne'; (groups[k] = groups[k] || []).push(it); });
+    const keys = ORDER.filter(k => groups[k]).concat(Object.keys(groups).filter(k => !ORDER.includes(k)));
+    if (!keys.length) frag.appendChild(section('—', [], kind));
+    keys.forEach(k => frag.appendChild(section(AISLES[k] || k, groups[k], kind)));
+    return frag;
+  }
+
+  async function draw() {
+    let rows;
+    try {
+      rows = await api('/items?select=name,aisle,status,source&status=in.(need,low)&order=name');
+    } catch (e) { showMsg('brak połączenia: ' + e.message); return; }
+    const lista = rows.filter(r => r.source === 'manual');
+    const sugestie = rows.filter(r => r.source !== 'manual');
+    $('#meta').textContent = 'REMA 1000 · układ sklepu · ' + new Date().toLocaleTimeString('pl-PL').slice(0, 5);
+    $('#c-list').textContent = lista.length;
+    $('#c-sugg').textContent = sugestie.length;
+    $('#pane-list').replaceChildren(grouped(lista, 'del'));
+    $('#pane-sugg').replaceChildren(grouped(sugestie, 'add'));
   }
 
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
-    document.getElementById('pane-list').hidden = t.dataset.tab !== 'list';
-    document.getElementById('pane-sugg').hidden = t.dataset.tab !== 'sugg';
+    $('#pane-list').hidden = t.dataset.tab !== 'list';
+    $('#pane-sugg').hidden = t.dataset.tab !== 'sugg';
   }));
 
-  document.querySelectorAll('#pane-list input[type=checkbox]').forEach(cb => {
-    cb.addEventListener('change', () => cb.closest('li').classList.toggle('done', cb.checked));
+  $('#form').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = $('#newitem').value.trim();
+    if (!v) return;
+    $('#newitem').value = '';
+    const t = v.replace(/^dodaj\s+/i, '');
+    if (/^(kupi(ł|le)m|kupione)/i.test(t)) act('bought', t.replace(/^(kupi(ł|le)m|kupione)\s*/i, ''), 'strona');
+    else if (/^(skończyło się|nie mam)/i.test(t)) act('out', t.replace(/^(skończyło się|nie mam)\s*/i, ''));
+    else act('add', t);
   });
-
-  async function copyCmd(cmd) {
-    try { await navigator.clipboard.writeText(cmd); return true; } catch (e) { return false; }
-  }
-
-  const KEY = 'zakupy_kolejka';
-  function q() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
-  function setQ(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
-
-  function syncBanner() {
-    const names = q();
-    let b = document.getElementById('queue-banner');
-    if (!names.length) { if (b) b.remove(); return; }
-    if (!b) {
-      b = document.createElement('div');
-      b.id = 'queue-banner'; b.className = 'banner';
-      document.getElementById('pane-list').prepend(b);
-    }
-    b.innerHTML = '<b>Do wysłania w Telegramie (' + names.length + '):</b><br>' +
-      names.map(n => 'dodaj ' + n).join('<br>');
-  }
-
-  document.querySelectorAll('#pane-list li .del').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const li = btn.closest('li');
-      const cmd = 'usuń ' + li.dataset.name;
-      const ok = await copyCmd(cmd);
-      showMsg((ok ? 'Skopiowane: ' : 'Wpisz w Telegramie: ') + '„' + cmd + '"');
-      li.style.opacity = '.35';
-    });
-  });
-
-  document.querySelectorAll('#pane-sugg li .add').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const li = btn.closest('li');
-      const name = li.dataset.name;
-      const cmd = 'dodaj ' + name;
-      const ok = await copyCmd(cmd);
-      const a = q();
-      if (!a.includes(name)) a.push(name);
-      setQ(a);
-      li.classList.add('queued');
-      syncBanner();
-      showMsg((ok ? 'Skopiowane: ' : 'Wpisz w Telegramie: ') + '„' + cmd + '" — wyślij, żeby trafiło na listę');
-    });
-  });
-
-  document.querySelectorAll('#pane-sugg li').forEach(li => {
-    if (q().includes(li.dataset.name)) li.classList.add('queued');
-  });
-  syncBanner();
+  $('#reload').addEventListener('click', draw);
+  draw();
+  setInterval(draw, 45000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) draw(); });
 </script>
 </body>
 </html>
