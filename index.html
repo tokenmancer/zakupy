@@ -50,6 +50,15 @@
   li .add:hover { background:#d7efdd; }
   .banner { background:#fff8e1; border:1px solid #f0e0a8; border-radius:12px; padding:10px 14px;
             margin-bottom:12px; font-size:.85rem; color:#6b5a12; }
+  li.emptyrow span { color:#b9b9b9; }
+  .qty { margin-left:auto; display:flex; align-items:center; gap:6px; }
+  .qty button { font-family:inherit; border:1px solid #e0e0dd; background:#fff; border-radius:9px;
+                width:36px; height:34px; font-size:1.05rem; line-height:1; cursor:pointer; }
+  .qty button:active { background:#f2f2f0; }
+  .qty button.qz { width:auto; padding:0 9px; font-size:.8rem; color:#9a9a9a; }
+  .qty b { min-width:44px; text-align:center; font-size:.95rem; font-variant-numeric:tabular-nums; }
+  .allbox { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--muted);
+            margin-bottom:10px; }
   footer { max-width:560px; margin:0 auto; padding:4px 16px 24px; color:var(--muted);
            font-size:.82rem; line-height:1.5; }
   .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:#1a1a1a;
@@ -65,6 +74,7 @@
   <div class="tabs">
     <button class="tab active" data-tab="list">Lista <span class="n" id="c-list">–</span></button>
     <button class="tab" data-tab="sugg">Sugestie <span class="n" id="c-sugg">–</span></button>
+    <button class="tab" data-tab="stock">Stan</button>
   </div>
 </header>
 <main>
@@ -77,11 +87,12 @@
   </div>
   <div id="pane-list"></div>
   <div id="pane-sugg" hidden></div>
+  <div id="pane-stock" hidden></div>
 </main>
 <footer>
   <p>Zmiany idą wprost do bazy (Supabase) — ta sama lista co w Telegramie.
   Odhaczenie = kupione, ✕ = usuń, + = dodaj sugestię do listy.</p>
-  <p style="margin-top:8px">Wygenerowano 2026-09-20 23:01</p>
+  <p style="margin-top:8px">Wygenerowano 2026-09-20 23:12</p>
 </footer>
 <div id="toast" class="toast"></div>
 <script>
@@ -194,9 +205,96 @@ const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torr
 
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
-    $('#pane-list').hidden = t.dataset.tab !== 'list';
-    $('#pane-sugg').hidden = t.dataset.tab !== 'sugg';
+    ['list', 'sugg', 'stock'].forEach(k => {
+      const p = $('#pane-' + k);
+      if (p) p.hidden = (t.dataset.tab !== k);
+    });
   }));
+
+  // ── zakładka „Stan" ─────────────────────────────────────────────────────
+  let stockRows = [];
+  let showAll = false;
+  const fmtQty = q => {
+    const n = Number(q) || 0;
+    return n === 0 ? '0' : (n % 1 === 0 ? String(n) : n.toFixed(2).replace(/0$/, ''));
+  };
+  async function setStock(name, qty) {
+    try {
+      const res = await api('/rpc/zk_stock', {method: 'POST',
+        body: JSON.stringify({p_pass: PASSPHRASE, p_name: name, p_qty: qty})});
+      if (res && res.ok === false) showMsg(res.error || 'błąd');
+      const it = stockRows.find(r => r.name === name);
+      if (it) it.qty = Number(res && res.qty !== undefined ? res.qty : qty);
+      renderStock();
+    } catch (e) { showMsg('błąd: ' + e.message); }
+  }
+  function stockRow(it) {
+    const el = document.createElement('li');
+    if (!(Number(it.qty) > 0)) el.classList.add('emptyrow');
+    const sp = document.createElement('span');
+    sp.textContent = it.name;
+    const ctl = document.createElement('div');
+    ctl.className = 'qty';
+    const mk = (txt, cls, fn) => { const b = document.createElement('button');
+      b.textContent = txt; b.className = cls; b.addEventListener('click', fn); return b; };
+    const val = document.createElement('b');
+    val.textContent = fmtQty(it.qty);
+    ctl.append(
+      mk('−', 'qn', () => setStock(it.name, Math.max(0, +(Number(it.qty) - 0.25).toFixed(2)))),
+      val,
+      mk('+', 'qp', () => setStock(it.name, +(Number(it.qty) + 0.25).toFixed(2))),
+      mk('0', 'qz', () => setStock(it.name, 0))
+    );
+    el.append(sp, ctl);
+    return el;
+  }
+  function renderStock() {
+    const pane = $('#pane-stock');
+    if (!pane) return;
+    pane.replaceChildren();
+    const box = document.createElement('label');
+    box.className = 'allbox';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = showAll;
+    cb.addEventListener('change', () => { showAll = cb.checked; renderStock(); });
+    box.append(cb, document.createTextNode('pokaż też to, czego nie ma'));
+    pane.appendChild(box);
+    const rows = stockRows.filter(r => showAll || Number(r.qty) > 0);
+    const groups = {};
+    rows.forEach(r => { const k = r.category || 'inne'; (groups[k] = groups[k] || []).push(r); });
+    const keys = ORDER.filter(k => groups[k]).concat(Object.keys(groups).filter(k => !ORDER.includes(k)));
+    if (!keys.length) {
+      const s = document.createElement('section');
+      s.innerHTML = '<h2>—</h2><ul><li><span class="empty">(pusto)</span></li></ul>';
+      pane.appendChild(s);
+    }
+    keys.forEach(k => {
+      const s = document.createElement('section');
+      const h = document.createElement('h2');
+      h.textContent = AISLES[k] || k;
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = groups[k].length;
+      h.appendChild(n);
+      const ul = document.createElement('ul');
+      groups[k].sort((a, b) => (Number(b.qty) > 0) - (Number(a.qty) > 0) || a.name.localeCompare(b.name));
+      groups[k].forEach(r => ul.appendChild(stockRow(r)));
+      s.append(h, ul);
+      pane.appendChild(s);
+    });
+  }
+  async function drawStock() {
+    try {
+      stockRows = await api('/stock?select=name,qty,category,source&order=name') || [];
+    } catch (e) { showMsg('brak stanu: ' + e.message); return; }
+    renderStock();
+  }
+
+  $('#reload').addEventListener('click', () => { draw(); drawStock(); });
+  draw();
+  drawStock();
+  setInterval(() => { draw(); drawStock(); }, 45000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) { draw(); drawStock(); }
+  });
 
   $('#form').addEventListener('submit', e => {
     e.preventDefault();
