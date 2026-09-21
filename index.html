@@ -92,11 +92,11 @@
 <footer>
   <p>Zmiany idą wprost do bazy (Supabase) — ta sama lista co w Telegramie.
   Odhaczenie = kupione, ✕ = usuń, + = dodaj sugestię do listy.</p>
-  <p style="margin-top:8px">Wygenerowano 2026-09-20 23:19</p>
+  <p style="margin-top:8px">Wygenerowano 2026-09-21 17:17</p>
 </footer>
 <div id="toast" class="toast"></div>
 <script>
-const CONFIG = {"url": "https://nojbfvwmnjkwddrzwrxw.supabase.co/rest/v1", "key": "sb_publishable_nWeOrV3lF_pKUEaUIXm6Lw_ALIPRoBl", "pass": "cebula-bulka-6ca6"};
+const CONFIG = {"url": "https://nojbfvwmnjkwddrzwrxw.supabase.co/rest/v1", "key": "sb_publishable_nWeOrV3lF_pKUEaUIXm6Lw_ALIPRoBl"};
 const AISLES = {"frukt_og_gront": "🥦 Owoce i warzywa", "brod": "🍞 Pieczywo", "meieri": "🥛 Nabiał", "palegg": "🥪 Wędliny i sery", "kjott_fisk": "🥩 Mięso i ryby", "torrvarer": "🍝 Suchy prowiant", "frys": "❄️ Mrożonki", "snacks_drikke": "🍫 Przekąski i napoje", "husholdning": "🧹 Chemia i higiena", "kassa": "🧾 Kasa", "inne": "📦 Inne"};
 const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torrvarer", "frys", "snacks_drikke", "husholdning", "kassa", "inne"];
 </script>
@@ -108,7 +108,20 @@ const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torr
     clearTimeout(showMsg._t);
     showMsg._t = setTimeout(() => toast.classList.remove('show'), 2600);
   }
-  const PASSPHRASE = CONFIG.pass;
+  // Haslo NIE jest wbudowane w strone — plik jest publiczny, wiec kazdy sekret w nim
+  // bylby sekretem publicznym. Pytamy raz na urzadzenie i trzymamy w localStorage;
+  // weryfikacja i tak odbywa sie po stronie bazy (zk_action / zk_stock).
+  const PASS_KEY = 'zk_pass';
+  let PASSPHRASE = localStorage.getItem(PASS_KEY) || '';
+  function askPass(force) {
+    if (PASSPHRASE && !force) return PASSPHRASE;
+    const msg = force ? 'Złe hasło. Podaj hasło do listy:' : 'Podaj hasło do listy (zapamiętam je na tym urządzeniu):';
+    const p = (window.prompt(msg, PASSPHRASE || '') || '').trim();
+    if (p) { PASSPHRASE = p; try { localStorage.setItem(PASS_KEY, p); } catch (e) {} }
+    return PASSPHRASE;
+  }
+  function forgetPass() { PASSPHRASE = ''; try { localStorage.removeItem(PASS_KEY); } catch (e) {} }
+  const isWrongPass = m => /has[łl]|password/i.test(m || '');
   let busy = false;
 
   async function api(path, opts) {
@@ -127,13 +140,20 @@ const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torr
 
   async function act(action, name, store) {
     if (busy) return;
+    if (!askPass()) return;
     busy = true;
+    const call = () => api('/rpc/zk_action', {
+      method: 'POST',
+      body: JSON.stringify({p_pass: PASSPHRASE, p_action: action, p_name: name,
+                            p_store: store || null})
+    });
     try {
-      const res = await api('/rpc/zk_action', {
-        method: 'POST',
-        body: JSON.stringify({p_pass: PASSPHRASE, p_action: action, p_name: name,
-                              p_store: store || null})
-      });
+      let res = await call();
+      if (res && res.ok === false && isWrongPass(res.error)) {
+        forgetPass();
+        if (!askPass(true)) { showMsg('anulowano'); return; }
+        res = await call();
+      }
       if (res && res.ok === false) showMsg(res.error || 'błąd');
       await draw();
     } catch (e) { showMsg('błąd: ' + e.message); }
@@ -219,9 +239,16 @@ const ORDER = ["frukt_og_gront", "brod", "meieri", "palegg", "kjott_fisk", "torr
     return n === 0 ? '0' : (n % 1 === 0 ? String(n) : n.toFixed(2).replace(/0$/, ''));
   };
   async function setStock(name, qty) {
+    if (!askPass()) return;
+    const call = () => api('/rpc/zk_stock', {method: 'POST',
+      body: JSON.stringify({p_pass: PASSPHRASE, p_name: name, p_qty: qty})});
     try {
-      const res = await api('/rpc/zk_stock', {method: 'POST',
-        body: JSON.stringify({p_pass: PASSPHRASE, p_name: name, p_qty: qty})});
+      let res = await call();
+      if (res && res.ok === false && isWrongPass(res.error)) {
+        forgetPass();
+        if (!askPass(true)) { showMsg('anulowano'); return; }
+        res = await call();
+      }
       if (res && res.ok === false) showMsg(res.error || 'błąd');
       const it = stockRows.find(r => r.name === name);
       if (it) it.qty = Number(res && res.qty !== undefined ? res.qty : qty);
